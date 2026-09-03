@@ -187,52 +187,7 @@
   body.className = 'dev-menu-body';
   menu.appendChild(body);
 
-  // Dragging Functionality
-  let isDragging = false, startX, startY, initialLeft, initialTop;
-  header.addEventListener('mousedown', (e) => {
-    if (e.target === closeBtn) return;
-    isDragging = true;
-    startX = e.clientX;
-    startY = e.clientY;
-    const rect = menu.getBoundingClientRect();
-    initialLeft = rect.left;
-    initialTop = rect.top;
-    menu.style.right = 'auto';
-    menu.style.left = `${initialLeft}px`;
-    menu.style.top = `${initialTop}px`;
-  });
-
-  document.addEventListener('mousemove', (e) => {
-    if (!isDragging) return;
-    menu.style.left = `${initialLeft + (e.clientX - startX)}px`;
-    menu.style.top = `${initialTop + (e.clientY - startY)}px`;
-  });
-
-  document.addEventListener('mouseup', () => { isDragging = false; });
-
-  // Section Creator Helper
-  function createSection(titleText, isFullWidth = false) {
-    const section = document.createElement('div');
-    section.className = 'dev-menu-section';
-    const label = document.createElement('div');
-    label.className = 'dev-menu-label';
-    label.innerText = titleText;
-    const grid = document.createElement('div');
-    grid.className = `dev-menu-grid ${isFullWidth ? 'full' : ''}`;
-    section.appendChild(label);
-    section.appendChild(grid);
-    body.appendChild(section);
-    return grid;
-  }
-
-  // Button Creator Helper
-  function createBtn(text, onClick, isPrimary = false) {
-    const btn = document.createElement('button');
-    btn.className = `dev-menu-btn ${isPrimary ? 'primary' : ''}`;
-    btn.innerText = text;
-    btn.onclick = onClick;
-    return btn;
-  }
+  // --- HELPER FUNCTIONS DEFINED BEFORE USE ---
 
   // Safe accessor helper
   function getGameState() {
@@ -264,9 +219,56 @@
     return true;
   }
 
+  // Section Creator Helper
+  function createSection(titleText, isFullWidth = false) {
+    const section = document.createElement('div');
+    section.className = 'dev-menu-section';
+    const label = document.createElement('div');
+    label.className = 'dev-menu-label';
+    label.innerText = titleText;
+    const grid = document.createElement('div');
+    grid.className = `dev-menu-grid ${isFullWidth ? 'full' : ''}`;
+    section.appendChild(label);
+    section.appendChild(grid);
+    body.appendChild(section);
+    return grid;
+  }
+
+  // Button Creator Helper
+  function createBtn(text, onClick, isPrimary = false) {
+    const btn = document.createElement('button');
+    btn.className = `dev-menu-btn ${isPrimary ? 'primary' : ''}`;
+    btn.innerText = text;
+    btn.onclick = onClick;
+    return btn;
+  }
+
+  // Dragging Functionality
+  let isDragging = false, startX, startY, initialLeft, initialTop;
+  header.addEventListener('mousedown', (e) => {
+    if (e.target === closeBtn) return;
+    isDragging = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    const rect = menu.getBoundingClientRect();
+    initialLeft = rect.left;
+    initialTop = rect.top;
+    menu.style.right = 'auto';
+    menu.style.left = `${initialLeft}px`;
+    menu.style.top = `${initialTop}px`;
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    menu.style.left = `${initialLeft + (e.clientX - startX)}px`;
+    menu.style.top = `${initialTop + (e.clientY - startY)}px`;
+  });
+
+  document.addEventListener('mouseup', () => { isDragging = false; });
+
   // --- SECTIONS & ACTIONS ---
 
-  // Currencies
+  // Resources Section
   const resGrid = createSection('Resources');
   resGrid.appendChild(createBtn('+100M Coins', () => {
     const amountToAdd = 100000000;
@@ -287,12 +289,14 @@
     }
   }));
 
-  resGrid.appendChild(createBtn('Set 300 Diamonds', () => {
+  resGrid.appendChild(createBtn('Set 500 Diamonds', () => {
     const p = getGameState();
-    if (p) p.diamonds = 300;
+    if (p) p.diamonds = 500;
     else console.warn('Player state not found.');
   }));
 
+  // Progression Section
+  const progGrid = createSection('Progression');
   progGrid.appendChild(createBtn('Unlock Planets', () => {
     const p = getGameState();
     if (p) {
@@ -327,7 +331,7 @@
     } else console.warn('Player state not found.');
   }));
 
-  // Global Overrides
+  // Global Overrides Section
   const masterGrid = createSection('Overrides', true);
   masterGrid.appendChild(createBtn('⚡ Max Everything', () => {
     const p = getGameState();
@@ -360,7 +364,7 @@
 
   document.body.appendChild(menu);
 
-  // Keyboard shortcut toggle listener
+  // Keyboard shortcut toggle listener (F8 key)
   if (!window.__devMenuF8Attached) {
     window.__devMenuF8Attached = true;
     window.addEventListener('keydown', (e) => {
