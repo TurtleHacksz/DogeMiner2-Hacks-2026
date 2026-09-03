@@ -289,7 +289,7 @@
 
   resGrid.appendChild(createBtn('Set 300 Diamonds', () => {
     const p = getGameState();
-    if (p) p.diamonds + 300;
+    if (p) p.diamonds = 300;
     else console.warn('Player state not found.');
   }));
 
