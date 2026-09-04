@@ -1,0 +1,572 @@
+(function () {
+  const MENU_ID = 'custom-dev-menu-v2';
+  const STYLE_ID = 'custom-dev-menu-styles';
+
+  // Force clean up any existing instances
+  document.getElementById(MENU_ID)?.remove();
+  document.getElementById(STYLE_ID)?.remove();
+
+  // Inject UI CSS styles for modern theme, transitions, and hover states
+  const style = document.createElement('style');
+  style.id = STYLE_ID;
+  style.textContent = `
+    #${MENU_ID} {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 999999;
+      width: 320px;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+      color: #303030;
+      font-family: -apple-system, BlinkMacSystemFont, "Fredoka One", Roboto, Helvetica, Arial, sans-serif, Fredoka One;
+      font-size: 13px;
+      user-select: none;
+      overflow: hidden;
+      animation: devMenuFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes devMenuFadeIn {
+      from { opacity: 0; transform: translateY(-8px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .dev-menu-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      background: rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      cursor: move;
+    }
+
+    .dev-menu-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      font-size: 12px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #94a3b8;
+    }
+
+    .dev-menu-status-dot {
+      width: 6px;
+      height: 6px;
+      background-color: #22c55e;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #22c55e;
+    }
+
+    .dev-menu-close {
+      background: transparent;
+      border: none;
+      color: #64748b;
+      cursor: pointer;
+      font-size: 14px;
+      line-height: 1;
+      padding: 4px;
+      border-radius: 4px;
+      transition: color 0.15s, background-color 0.15s;
+    }
+
+    .dev-menu-close:hover {
+      color: #f1f5f9;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .dev-menu-body {
+      padding: 14px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .dev-menu-section {
+      margin-bottom: 14px;
+    }
+
+    .dev-menu-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .dev-menu-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #64748b;
+      margin-bottom: 8px;
+    }
+
+    .dev-menu-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .dev-menu-grid.full {
+      grid-template-columns: 1fr;
+    }
+
+    .dev-menu-input {
+      width: 100%;
+      box-sizing: border-box;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 6px;
+      padding: 8px 10px;
+      color: #f8fafc;
+      font-size: 12px;
+      outline: none;
+      transition: border-color 0.15s;
+      margin-bottom: 6px;
+    }
+
+    .dev-menu-input:focus {
+      border-color: #3b82f6;
+    }
+
+    .dev-menu-btn {
+      background: rgba(255, 255, 255, 0.05);
+      color: #e2e8f0;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-align: center;
+      outline: none;
+    }
+
+    .dev-menu-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+
+    .dev-menu-btn:active {
+      transform: translateY(0);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .dev-menu-btn.primary {
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(16, 185, 129, 0.3));
+      border-color: rgba(34, 197, 94, 0.4);
+      color: #4ade80;
+      font-weight: 600;
+    }
+
+    .dev-menu-btn.primary:hover {
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.3), rgba(16, 185, 129, 0.4));
+      border-color: rgba(34, 197, 94, 0.6);
+      color: #86efac;
+      box-shadow: 0 0 12px rgba(34, 197, 94, 0.2);
+    }
+
+    .dev-menu-btn.active {
+      background: linear-gradient(135deg, rgba(234, 179, 8, 0.25), rgba(202, 138, 4, 0.35));
+      border-color: rgba(234, 179, 8, 0.6);
+      color: #fde047;
+    }
+  `;
+  document.head.appendChild(style);
+
+  // Create UI elements
+  const menu = document.createElement('div');
+  menu.id = MENU_ID;
+
+  // Header & Title Bar
+  const header = document.createElement('div');
+  header.className = 'dev-menu-header';
+
+  const titleContainer = document.createElement('div');
+  titleContainer.className = 'dev-menu-title';
+  titleContainer.innerHTML = `<span class="dev-menu-status-dot"></span> DEV CONSOLE`;
+
+  const closeBtn = document.createElement('button');
+  closeBtn.className = 'dev-menu-close';
+  closeBtn.innerHTML = '&#215;';
+  closeBtn.onclick = () => { menu.style.display = 'none'; };
+
+  header.appendChild(titleContainer);
+  header.appendChild(closeBtn);
+  menu.appendChild(header);
+
+  // Body Container
+  const body = document.createElement('div');
+  body.className = 'dev-menu-body';
+  menu.appendChild(body);
+
+  // --- HELPER FUNCTIONS ---
+
+  function getGameState() {
+    if (window.dogeminer?.player) return window.dogeminer.player;
+    if (window.game?.player) return window.game.player;
+    if (window.player) return window.player;
+    return null;
+  }
+
+  function getCurrentTimeline() {
+    const p = getGameState();
+    if (p) {
+      return p.timeline || p.currentTimeline || p.location || p.currentLocation || p.planet || window.dogeminer?.currentLocation || 'default';
+    }
+    return null;
+  }
+
+  function addCurrency(targetObj, key, amount) {
+    if (!targetObj || targetObj[key] === undefined) return false;
+    if (typeof targetObj[key] === 'object' && targetObj[key] !== null) {
+      if (typeof targetObj[key].add === 'function') {
+        targetObj[key] = targetObj[key].add(amount);
+        return true;
+      }
+      if (typeof targetObj[key].plus === 'function') {
+        targetObj[key] = targetObj[key].plus(amount);
+        return true;
+      }
+      if ('value' in targetObj[key]) {
+        targetObj[key].value = (Number(targetObj[key].value) || 0) + amount;
+        return true;
+      }
+    }
+    const current = Number(targetObj[key]) || 0;
+    targetObj[key] = current + amount;
+    return true;
+  }
+
+  function createSection(titleText, isFullWidth = false) {
+    const section = document.createElement('div');
+    section.className = 'dev-menu-section';
+    const label = document.createElement('div');
+    label.className = 'dev-menu-label';
+    label.innerText = titleText;
+    const grid = document.createElement('div');
+    grid.className = `dev-menu-grid ${isFullWidth ? 'full' : ''}`;
+    section.appendChild(label);
+    section.appendChild(grid);
+    body.appendChild(section);
+    return grid;
+  }
+
+  function createBtn(text, onClick, isPrimary = false) {
+    const btn = document.createElement('button');
+    btn.className = `dev-menu-btn ${isPrimary ? 'primary' : ''}`;
+    btn.innerText = text;
+    btn.onclick = onClick;
+    return btn;
+  }
+
+  // Dragging Functionality
+  let isDragging = false, startX, startY, initialLeft, initialTop;
+  header.addEventListener('mousedown', (e) => {
+    if (e.target === closeBtn) return;
+    isDragging = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    const rect = menu.getBoundingClientRect();
+    initialLeft = rect.left;
+    initialTop = rect.top;
+    menu.style.right = 'auto';
+    menu.style.left = `${initialLeft}px`;
+    menu.style.top = `${initialTop}px`;
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    menu.style.left = `${initialLeft + (e.clientX - startX)}px`;
+    menu.style.top = `${initialTop + (e.clientY - startY)}px`;
+  });
+
+  document.addEventListener('mouseup', () => { isDragging = false; });
+
+  // --- SECTIONS & ACTIONS ---
+
+  // Timeline & Save Section
+  const timelineSection = createSection('Timeline & Save Manager', true);
+
+  // Type Box Input
+  const timelineInput = document.createElement('input');
+  timelineInput.type = 'text';
+  timelineInput.placeholder = 'Type Timeline / Planet Name...';
+  timelineInput.className = 'dev-menu-input';
+  timelineSection.appendChild(timelineInput);
+
+  // Grid for Timeline/Save buttons
+  const timelineGrid = document.createElement('div');
+  timelineGrid.className = 'dev-menu-grid';
+  timelineSection.appendChild(timelineGrid);
+
+  // Change Timeline Action
+  timelineGrid.appendChild(createBtn('🌌 Go to Timeline', () => {
+    const target = timelineInput.value.trim();
+    if (!target) {
+      alert('Please enter a valid timeline or planet name!');
+      return;
+    }
+
+    const p = getGameState();
+    let success = false;
+
+    if (typeof window.dogeminer?.gotoLocation === 'function') {
+      window.dogeminer.gotoLocation(target);
+      success = true;
+    } else if (typeof window.game?.changeLocation === 'function') {
+      window.game.changeLocation(target);
+      success = true;
+    } else if (p) {
+      if ('timeline' in p) p.timeline = target;
+      if ('currentTimeline' in p) p.currentTimeline = target;
+      if ('location' in p) p.location = target;
+      if ('currentLocation' in p) p.currentLocation = target;
+      if ('planet' in p) p.planet = target;
+      success = true;
+    }
+
+    if (success) {
+      alert(`Attempted switch to timeline: ${target}`);
+      if (p?.update) p.update();
+      if (window.dogeminer?.updateUI) window.dogeminer.updateUI();
+    } else {
+      console.warn('Could not execute timeline change.');
+    }
+  }));
+
+  // Export Save Action
+  timelineGrid.appendChild(createBtn('💾 Export Save', () => {
+    const p = getGameState();
+    let saveData = null;
+
+    if (typeof window.dogeminer?.exportSave === 'function') {
+      saveData = window.dogeminer.exportSave();
+    } else if (typeof window.game?.exportSave === 'function') {
+      saveData = window.game.exportSave();
+    } else if (p) {
+      saveData = btoa(JSON.stringify(p));
+    }
+
+    if (saveData) {
+      navigator.clipboard.writeText(saveData).then(() => {
+        alert('Save code copied to clipboard!');
+      }).catch(() => {
+        prompt('Copy your save data below:', saveData);
+      });
+    } else {
+      alert('Failed to generate save export string.');
+    }
+  }));
+
+  // Load Save Action
+  timelineGrid.appendChild(createBtn('📂 Load Save', () => {
+    const saveString = prompt('Paste your save string here:');
+    if (!saveString) return;
+
+    if (typeof window.dogeminer?.importSave === 'function') {
+      window.dogeminer.importSave(saveString);
+    } else if (typeof window.game?.importSave === 'function') {
+      window.game.importSave(saveString);
+    } else {
+      try {
+        const decoded = JSON.parse(atob(saveString));
+        const p = getGameState();
+        if (p) {
+          Object.assign(p, decoded);
+          if (p.update) p.update();
+          alert('Save successfully loaded!');
+        }
+      } catch (err) {
+        alert('Invalid save string provided.');
+        console.error(err);
+      }
+    }
+  }));
+
+  // Combat / Pickaxe Section
+  const combatGrid = createSection('Combat / Damage', true);
+
+  let damageBoostActive = false;
+  let initialTimeline = null;
+  let damageMonitorInterval = null;
+
+  const pickaxeBtn = createBtn('⛏️ 10x Pickaxe Damage (This Timeline)', () => {
+    const p = getGameState();
+    if (!p) {
+      console.warn('Player state not found.');
+      return;
+    }
+
+    if (damageBoostActive) {
+      disableDamageBoost(p);
+      return;
+    }
+
+    const dmgKey = 'pickaxePower' in p ? 'pickaxePower' : ('clickPower' in p ? 'clickPower' : ('damage' in p ? 'damage' : null));
+
+    if (dmgKey) {
+      p[dmgKey] = (Number(p[dmgKey]) || 1) * 10;
+      damageBoostActive = true;
+      initialTimeline = getCurrentTimeline();
+      pickaxeBtn.classList.add('active');
+      pickaxeBtn.innerText = '⚡ 10x Damage Active (Click to Reset)';
+
+      if (damageMonitorInterval) clearInterval(damageMonitorInterval);
+      damageMonitorInterval = setInterval(() => {
+        const currentTl = getCurrentTimeline();
+        if (currentTl !== initialTimeline) {
+          disableDamageBoost(p);
+        }
+      }, 1000);
+    } else {
+      console.warn('Could not detect pickaxe damage property on player state.');
+    }
+  });
+
+  function disableDamageBoost(p) {
+    const dmgKey = 'pickaxePower' in p ? 'pickaxePower' : ('clickPower' in p ? 'clickPower' : ('damage' in p ? 'damage' : null));
+    if (dmgKey && damageBoostActive) {
+      p[dmgKey] = Math.max(1, Math.floor((Number(p[dmgKey]) || 1) / 10));
+    }
+    damageBoostActive = false;
+    initialTimeline = null;
+    pickaxeBtn.classList.remove('active');
+    pickaxeBtn.innerText = '⛏️ 10x Pickaxe Damage (This Timeline)';
+    if (damageMonitorInterval) {
+      clearInterval(damageMonitorInterval);
+      damageMonitorInterval = null;
+    }
+  }
+
+  combatGrid.appendChild(pickaxeBtn);
+
+  // Resources Section
+  const resGrid = createSection('Resources');
+
+  resGrid.appendChild(createBtn('+100M Coins', () => {
+    const amountToAdd = 100000000;
+    if (typeof window.addCoins === 'function') return window.addCoins(amountToAdd);
+    if (typeof window.dogeminer?.addCoins === 'function') return window.dogeminer.addCoins(amountToAdd);
+    if (typeof window.game?.addCoins === 'function') return window.game.addCoins(amountToAdd);
+
+    const p = getGameState();
+    if (p) {
+      addCurrency(p, 'coins', amountToAdd);
+      addCurrency(p, 'dogecoins', amountToAdd);
+      addCurrency(p, 'currency', amountToAdd);
+      if (typeof p.update === 'function') p.update();
+      if (typeof window.dogeminer?.updateUI === 'function') window.dogeminer.updateUI();
+      if (typeof window.game?.updateUI === 'function') window.game.updateUI();
+    } else {
+      console.warn('Player state not found.');
+    }
+  }));
+
+  resGrid.appendChild(createBtn('+100M Diamonds', () => {
+    const amountToAdd = 100000000;
+    const p = getGameState();
+    if (p) {
+      addCurrency(p, 'diamonds', amountToAdd);
+      addCurrency(p, 'gems', amountToAdd);
+      if (typeof p.update === 'function') p.update();
+      if (typeof window.dogeminer?.updateUI === 'function') window.dogeminer.updateUI();
+      if (typeof window.game?.updateUI === 'function') window.game.updateUI();
+    } else {
+      console.warn('Player state not found.');
+    }
+  }));
+
+  resGrid.appendChild(createBtn('Set 500 Diamonds', () => {
+    const p = getGameState();
+    if (p) p.diamonds = 500;
+    else console.warn('Player state not found.');
+  }));
+
+  // Progression Section
+  const progGrid = createSection('Progression');
+  progGrid.appendChild(createBtn('Unlock Planets', () => {
+    const p = getGameState();
+    if (p) {
+      const locations = p.locations || p.planets || window.dogeminer?.locations;
+      if (locations) {
+        Object.keys(locations).forEach((key) => {
+          if (typeof locations[key] === 'object' && locations[key] !== null) {
+            locations[key].unlocked = true;
+            locations[key].visited = true;
+          } else {
+            locations[key] = true;
+          }
+        });
+      }
+    } else console.warn('Player state not found.');
+  }));
+
+  progGrid.appendChild(createBtn('Unlock Upgrades', () => {
+    const p = getGameState();
+    if (p) {
+      const upgrades = p.upgrades || window.dogeminer?.upgrades;
+      if (upgrades) {
+        Object.keys(upgrades).forEach((key) => {
+          if (typeof upgrades[key] === 'object' && upgrades[key] !== null) {
+            upgrades[key].bought = true;
+            upgrades[key].unlocked = true;
+          } else {
+            upgrades[key] = true;
+          }
+        });
+      }
+    } else console.warn('Player state not found.');
+  }));
+
+  // Global Overrides Section
+  const masterGrid = createSection('Overrides', true);
+  masterGrid.appendChild(createBtn('⚡ Max Everything', () => {
+    const p = getGameState();
+    if (p) {
+      p.coins = 1e308;
+      p.dogecoins = 1e308;
+      p.diamonds = 999999999;
+      p.dps = 1e308;
+      p.clickPower = 1e308;
+
+      ['helpers', 'buildings', 'upgrades', 'locations', 'planets', 'badges'].forEach((prop) => {
+        const target = p[prop] || window.dogeminer?.[prop];
+        if (target) {
+          Object.keys(target).forEach((k) => {
+            if (typeof target[k] === 'object' && target[k] !== null) {
+              target[k].unlocked = true;
+              target[k].bought = true;
+              if ('count' in target[k]) target[k].count = 9999;
+              if ('level' in target[k]) target[k].level = 9999;
+            } else if (typeof target[k] === 'boolean') {
+              target[k] = true;
+            } else if (typeof target[k] === 'number') {
+              target[k] = 9999;
+            }
+          });
+        }
+      });
+    } else console.warn('Player state not found.');
+  }, true));
+
+  document.body.appendChild(menu);
+
+  // Keyboard shortcut toggle listener (F8 key)
+  if (!window.__devMenuF8Attached) {
+    window.__devMenuF8Attached = true;
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'F8') {
+        e.preventDefault();
+        const el = document.getElementById(MENU_ID);
+        if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
+      }
+    });
+  }
+})();
