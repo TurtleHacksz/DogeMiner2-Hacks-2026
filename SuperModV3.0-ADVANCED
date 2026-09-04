@@ -1,0 +1,157 @@
+(function () {
+  const MENU_ID = 'doge-dev-suite-direct';
+  const STYLE_ID = 'doge-dev-suite-direct-styles';
+
+  document.getElementById(MENU_ID)?.remove();
+  document.getElementById(STYLE_ID)?.remove();
+
+  const style = document.createElement('style');
+  style.id = STYLE_ID;
+  style.textContent = `
+    #${MENU_ID} {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999999;
+      width: 320px;
+      background: rgba(10, 15, 30, 0.95);
+      backdrop-filter: blur(10px);
+      border: 1px solid #38bdf8;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+      color: #fff;
+      font-family: sans-serif;
+      font-size: 12px;
+      padding: 12px;
+    }
+    .dds-title {
+      font-weight: bold;
+      color: #38bdf8;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .dds-btn {
+      width: 100%;
+      background: #1e293b;
+      border: 1px solid #475569;
+      color: #f8fafc;
+      padding: 8px;
+      margin-bottom: 6px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .dds-btn:hover { background: #334155; border-color: #38bdf8; }
+    .dds-btn.active { background: #15803d; border-color: #22c55e; }
+  `;
+  document.head.appendChild(style);
+
+  const menu = document.createElement('div');
+  menu.id = MENU_ID;
+  menu.innerHTML = `
+    <div class="dds-title">
+      <span>🐕 DOGEMINER DIRECT INJECTOR</span>
+      <span style="cursor:pointer" onclick="this.parentElement.parentElement.remove()">✕</span>
+    </div>
+    <button class="dds-btn" id="btn-force-click">⚡ Auto-Clicker (Brute Force)</button>
+    <button class="dds-btn" id="btn-scan-memory">🔍 Deep Scan & Grant Coins</button>
+    <button class="dds-btn" id="btn-nuke-upgrades">⚡ Click All Visible Buttons</button>
+  `;
+  document.body.appendChild(menu);
+
+  // 1. Direct Mouse Event Synthesis (Bypasses state variables by simulating real human clicks)
+  let clickInterval = null;
+  document.getElementById('btn-force-click').onclick = function () {
+    if (clickInterval) {
+      clearInterval(clickInterval);
+      clickInterval = null;
+      this.classList.remove('active');
+      this.innerText = '⚡ Auto-Clicker (Brute Force)';
+    } else {
+      this.classList.add('active');
+      this.innerText = '⚡ Auto-Clicker ACTIVE';
+      clickInterval = setInterval(() => {
+        // Try finding canvas or main clickable rock elements in the DOM
+        const targets = [
+          document.querySelector('canvas'),
+          document.getElementById('rock'),
+          document.querySelector('.rock'),
+          document.querySelector('[class*="rock"]'),
+          document.querySelector('[id*="rock"]')
+        ];
+
+        targets.forEach(target => {
+          if (target) {
+            const rect = target.getBoundingClientRect();
+            const x = rect.left + rect.width / 2;
+            const y = rect.top + rect.height / 2;
+
+            const opts = {
+              bubbles: true,
+              cancelable: true,
+              clientX: x,
+              clientY: y,
+              view: window
+            };
+
+            target.dispatchEvent(new MouseEvent('mousedown', opts));
+            target.dispatchEvent(new MouseEvent('mouseup', opts));
+            target.dispatchEvent(new MouseEvent('click', opts));
+          }
+        });
+      }, 15);
+    }
+  };
+
+  // 2. Deep Memory State Scanner (Scans prototype tree & Vue/React internal component instances)
+  document.getElementById('btn-scan-memory').onclick = function () {
+    let modified = false;
+
+    // Scan DOM Element properties (Vue / React / Webpack instances attached to DOM)
+    document.querySelectorAll('*').forEach(el => {
+      for (const key in el) {
+        if (key.startsWith('__vue__') || key.startsWith('__reactInternalInstance')) {
+          const comp = el[key];
+          // Deep check Vue data models
+          if (comp?.state || comp?.context || comp?.setupState) {
+            console.log('Found Component Instance:', comp);
+          }
+        }
+      }
+    });
+
+    // Scan global window object properties for numeric structures
+    for (const key in window) {
+      try {
+        if (window[key] && typeof window[key] === 'object') {
+          if ('coins' in window[key] || 'dogecoins' in window[key] || 'currency' in window[key]) {
+            if ('coins' in window[key]) window[key].coins = 1e308;
+            if ('dogecoins' in window[key]) window[key].dogecoins = 1e308;
+            modified = true;
+          }
+        }
+      } catch (e) {}
+    }
+
+    if (modified) {
+      alert('Successfully mutated game memory values!');
+    } else {
+      alert('Memory scan complete. Use the Auto-Clicker or click buttons directly.');
+    }
+  };
+
+  // 3. UI Auto-Buyer (Finds all upgrade/item buttons currently rendered on screen and clicks them)
+  document.getElementById('btn-nuke-upgrades').onclick = function () {
+    const buttons = document.querySelectorAll('button, .button, [class*="upgrade"], [class*="buy"]');
+    let count = 0;
+    buttons.forEach(btn => {
+      if (btn.id !== 'btn-force-click' && !btn.closest(`#${MENU_ID}`)) {
+        btn.click();
+        count++;
+      }
+    });
+    alert(`Triggered ${count} screen actions.`);
+  };
+})();
