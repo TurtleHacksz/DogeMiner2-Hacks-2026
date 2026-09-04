@@ -1,24 +1,49 @@
-# DogeMiner2-Hacks-2026
-ULTIMATE DogeMiner2 Hacks for cateminer.com! Includes DEV MENU TO MAX GAME
-javascript:(function(){/* PASTE FULL SCRIPT HERE */})();
-DogeMiner 2 - Custom Developer Console & Mod MenuA modern, glassmorphic floating UI menu designed for DogeMiner 2. This script injects an interactive developer console directly into your browser,
-allowing you to manipulate game state, unlock content, and max out currencies instantly.
-✨ Features💎 Resource Management+100M Coins: Adds 100,000,000 Dogecoins directly to your player balance and updates game state UI dynamically.Set 300 Diamonds: Grants maximum diamonds instantly.🚀
-Progression & UnlocksMax Helpers: Unlocks all helpers/buildings, maxes out their count to 9,999,
-and sets levels to 9,999.Unlock Planets: Unlocks all locations, celestial bodies, and planets across space.
-Unlock Upgrades: Marks all items in the upgrade store as unlocked and purchased.⚡ Global OverridesMax 
-Everything: Set coins, DPS, and click power to maximum limits ($1 \times 10^{308}$), sets 999,999,999
-diamonds, and instantly maxes out all sub-properties, badges, helpers, and upgrades.🎨 UI & UXModern 
-Aesthetic: Dark-mode glassmorphic interface with clean layout grids and category headers.Draggable Window: 
-Click and drag the header bar to reposition the menu anywhere on the screen.Quick Toggle: Press F8 or click
-the close button to show or hide the menu at any time.Auto Engine Detection: Safe accessors to handle variable
-game pathing across different releases of DogeMiner 2.🚀 How to UseMethod 1: Browser Console (Quickest)Open DogeMiner
-2 in your browser.Open your browser's Developer Tools:Windows/Linux: Press F12 or Ctrl + Shift + IMac: Press Cmd +
-Option + IClick on the Console tab.Paste the script from script.js into the console and press Enter.Method 2: 
-BookmarkletCreate a new bookmark in your browser.Name it DogeMiner Hack.In the URL field, wrap the script inside 
-javascript: like this:JavaScriptjavascript:(function(){/* PASTE FULL SCRIPT HERE */})();
-Click the bookmark anytime you are on the DogeMiner 2 website to launch the UI.🎮 Key ControlsActionControlToggle 
-Menu VisibilityPress F8 on your keyboardMove MenuClick & drag the top header bar (DEV CONSOLE)Close MenuClick the × 
-button in the top right⚠️ DisclaimerThis tool is created for testing, debugging, and educational purposes only.
-Using game-breaking options (such as ⚡ Max Everything) will completely bypass game progression and may
-reduce overall enjoyment. It is recommended to back up your save string prior to using extreme modifiers.
+# DogeMiner2 Hacks 2026
+
+An updated, high-performance mod menu and cheat console for **DogeMiner 2** (2026 Edition). Features a dark glassmorphic interface, draggable overlay, and instant state modifications for resources, helpers, planets, and upgrades.
+
+---
+
+## ✨ Features
+
+### 💎 Resource Hacks
+* **+100M Coins:** Adds 100,000,000 Dogecoins directly to player state and refreshes UI.
+* **300 Diamonds:** Sets diamond count to 300.
+
+### 🚀 Progression & Unlocks
+* **Max Helpers:** Unlocks all helpers and buildings, setting level and count to 9,999.
+* **Unlock Planets:** Grants access to all planets, locations, and celestial destinations.
+* **Unlock Upgrades:** Auto-purchases and unlocks all store items and modifiers.
+
+### ⚡ Global Overrides
+* **Max Everything:** Sets coins, DPS, and click power to maximum floating point limits ($1 \times 10^{308}$), sets 999,999,999 diamonds, and maxes out all sub-properties, badges, helpers, and upgrades.
+
+### 🎨 UI Capabilities
+* **Glassmorphic Theme:** Blur effect overlay with structured grid buttons and hover responses.
+* **Draggable Window:** Drag the `DOGEMINER2 HACKS 2026` title bar to move the menu.
+* **Shortcut Toggle:** Press `F8` to show/hide the panel on demand.
+
+---
+
+## 🚀 Quick Start
+
+1. Open [DogeMiner 2](https://dogeminer2.com/) in your browser.
+2. Open Browser Developer Tools (`F12` or `Ctrl + Shift + I` / `Cmd + Option + I`).
+3. Click the **Console** tab.
+4. Copy and paste the script above into the console and hit **Enter**.
+
+----
+
+## 🎮 Controls
+
+| Action | Control |
+| :--- | :--- |
+| **Toggle Overlay** | Press `F8` |
+| **Move Panel** | Click & Drag Header Bar |
+| **Close Panel** | Click `×` button |
+
+---
+
+## 📄 License
+
+Distributed under the **GNU General Public License v3.0**. See the header in `script.js` or `LICENSE` for details.
